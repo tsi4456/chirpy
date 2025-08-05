@@ -23,6 +23,7 @@ func main() {
 	cfg.db = database.New(db)
 	cfg.env = os.Getenv("PLATFORM")
 	cfg.secret = os.Getenv("SECRET")
+	cfg.polka_key = os.Getenv("POLKA_KEY")
 
 	sm := http.NewServeMux()
 
@@ -34,14 +35,20 @@ func main() {
 	sm.HandleFunc("GET /api/healthz", handleHealth)
 	sm.HandleFunc("GET /admin/metrics", cfg.handleMetric)
 	sm.HandleFunc("POST /admin/reset", cfg.handleReset)
+
 	sm.HandleFunc("POST /api/users", cfg.handleUsers)
 	sm.HandleFunc("PUT /api/users", cfg.handleUpdateUser)
+
 	sm.HandleFunc("POST /api/login", cfg.handleLogin)
 	sm.HandleFunc("POST /api/refresh", cfg.handleRefresh)
 	sm.HandleFunc("POST /api/revoke", cfg.handleRevoke)
+
 	sm.HandleFunc("POST /api/chirps", cfg.handlePostChirps)
 	sm.HandleFunc("GET /api/chirps", cfg.handleGetChirps)
 	sm.HandleFunc("GET /api/chirps/{chirpID}", cfg.handleGetChirp)
+	sm.HandleFunc("DELETE /api/chirps/{chirpID}", cfg.handleDeleteChirp)
+
+	sm.HandleFunc("POST /api/polka/webhooks", cfg.handlePolkaWebhooks)
 
 	server.ListenAndServe()
 }

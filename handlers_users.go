@@ -34,7 +34,7 @@ func (cfg *apiConfig) handleUsers(w http.ResponseWriter, r *http.Request) {
 		respondWithError(w, 400, err.Error())
 		return
 	}
-	respondWithJSON(w, 201, User{Id: resp.ID.String(), CreatedAt: resp.CreatedAt.Time.String(), UpdatedAt: resp.UpdatedAt.Time.String(), Email: resp.Email})
+	respondWithJSON(w, 201, User{Id: resp.ID.String(), CreatedAt: resp.CreatedAt.Time.String(), UpdatedAt: resp.UpdatedAt.Time.String(), Email: resp.Email, IsChirpyRed: resp.IsChirpyRed})
 }
 
 func (cfg *apiConfig) handleLogin(w http.ResponseWriter, r *http.Request) {
@@ -43,6 +43,7 @@ func (cfg *apiConfig) handleLogin(w http.ResponseWriter, r *http.Request) {
 		CreatedAt    time.Time `json:"created_at"`
 		UpdatedAt    time.Time `json:"updated_at"`
 		Email        string    `json:"email"`
+		IsChirpyRed  bool      `json:"is_chirpy_red"`
 		Token        string    `json:"token"`
 		RefreshToken string    `json:"refresh_token"`
 	}
@@ -78,7 +79,7 @@ func (cfg *apiConfig) handleLogin(w http.ResponseWriter, r *http.Request) {
 	}
 	cfg.db.CreateRefreshToken(r.Context(), database.CreateRefreshTokenParams{Token: refresh_token, UserID: resp.ID})
 
-	respondWithJSON(w, 200, loginResponse{ID: resp.ID, CreatedAt: resp.CreatedAt.Time, UpdatedAt: resp.UpdatedAt.Time, Email: resp.Email, Token: token, RefreshToken: refresh_token})
+	respondWithJSON(w, 200, loginResponse{ID: resp.ID, CreatedAt: resp.CreatedAt.Time, UpdatedAt: resp.UpdatedAt.Time, Email: resp.Email, IsChirpyRed: resp.IsChirpyRed, Token: token, RefreshToken: refresh_token})
 }
 
 func (cfg *apiConfig) handleRefresh(w http.ResponseWriter, r *http.Request) {

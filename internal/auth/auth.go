@@ -38,3 +38,16 @@ func GetBearerToken(headers http.Header) (string, error) {
 	tokenString = strings.TrimSpace(tokenString)
 	return tokenString, nil
 }
+
+func GetAPIKey(headers http.Header) (string, error) {
+	authHeader := headers.Get("Authorization")
+	if authHeader == "" {
+		return "", errors.New("Authorization token not found")
+	}
+	tokenString, valid := strings.CutPrefix(authHeader, "ApiKey")
+	if !valid {
+		return "", errors.New("Authorization token not found")
+	}
+	tokenString = strings.TrimSpace(tokenString)
+	return tokenString, nil
+}
